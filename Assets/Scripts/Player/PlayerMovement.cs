@@ -12,9 +12,10 @@ public class PlayerMovement : MonoBehaviour
     Vector3 MoveDirection;
     [SerializeField] float turnSpeed = 5f;
     float targetY;
+    
 
     bool isGrounded=true;
-    // int StepIndex=0;
+    int StepIndex=0;
 
 
     void Start()
@@ -48,14 +49,16 @@ public class PlayerMovement : MonoBehaviour
             rb.AddForce(Vector3.up *JumpForce,ForceMode.Impulse);
             isGrounded=false;
         }
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (StepIndex==0 && Input.GetKeyDown(KeyCode.LeftArrow))
         {
             targetY -= 90f;
+            StepIndex=1;
         }
 
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (StepIndex==1 && Input.GetKeyDown(KeyCode.RightArrow))
         {
             targetY += 90f;
+            StepIndex=0;
         }
 
         
@@ -63,7 +66,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void FixedUpdate()
     {
-        float newY = Mathf.LerpAngle(transform.eulerAngles.y,targetY,turnSpeed * Time.deltaTime);
+        float newY = Mathf.LerpAngle(transform.eulerAngles.y,targetY,turnSpeed * Time.fixedDeltaTime);
         transform.rotation = Quaternion.Euler(0, newY, 0);
         MoveDirection = transform.forward;
 
@@ -80,4 +83,6 @@ public class PlayerMovement : MonoBehaviour
             isGrounded=true;
         }
     }
+    
+
 }
