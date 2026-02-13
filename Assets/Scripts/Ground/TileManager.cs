@@ -1,28 +1,46 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TileManager : MonoBehaviour
 {
-    public GameObject[] tilePrefabs;
-
+    public GameObject[] tilePrefabs;   
     public int tilesOnScreen = 5;
-
     public Transform player;
 
-    private List<GameObject> activeTiles = new List<GameObject>();
+    public float slopeAngle = -7f;
+
+
+    private Queue<GameObject> activeTiles = new Queue<GameObject>();
+    private Stack<GameObject>[] tilePools;
 
     private Vector3 nextSpawnPosition;
     private Quaternion nextSpawnRotation;
-    public int initialStraightTiles = 1;
-    private int spawnedTiles = 0;
+
+   
     private int currentIndex = 0;
 
     void Start()
     {
         nextSpawnPosition = Vector3.zero;
-        nextSpawnRotation = Quaternion.identity;
+        nextSpawnRotation = Quaternion.Euler(15f, 0f, 0f);
 
+
+        
+        tilePools = new Stack<GameObject>[tilePrefabs.Length];
+
+        for (int i = 0; i < tilePrefabs.Length; i++)
+        {
+            tilePools[i] = new Stack<GameObject>();
+
+            for (int j = 0; j < tilesOnScreen; j++)
+            {
+                GameObject tile = Instantiate(tilePrefabs[i]);
+                tile.SetActive(false);
+                tilePools[i].Push(tile);
+            }
+        }
+
+        
         for (int i = 0; i < tilesOnScreen; i++)
         {
             SpawnTile();
@@ -31,60 +49,72 @@ public class TileManager : MonoBehaviour
 
     void Update()
     {
-         if (activeTiles.Count == 0) return;
+        if (activeTiles.Count == 0) return;
 
-        float distance = Vector3.Distance(
-            player.position,
-            activeTiles[activeTiles.Count - 1].transform.position
-        );
+        GameObject firstTile = activeTiles.Peek();
 
-        if (distance < 25f) // tile length 20 + buffer
+        if (player.position.z > firstTile.transform.position.z + 40f)
         {
             SpawnTile();
-            DeleteTile();
+            RecycleTile();
         }
 
     }
 
     void SpawnTile()
     {
-        GameObject tile;
+        int prefabIndex;
         
-        if (spawnedTiles < initialStraightTiles)
-        {
-            tile = Instantiate(tilePrefabs[0], nextSpawnPosition, nextSpawnRotation);
-        }
-        else
-        {
-            tile = Instantiate(
-                tilePrefabs[currentIndex],
-                nextSpawnPosition,
-                nextSpawnRotation
-            );
+        prefabIndex = currentIndex;
+        currentIndex++;
+        if (currentIndex >= tilePrefabs.Length)
+            currentIndex = 0;
+        
 
-            currentIndex++;
+        GameObject tile = GetTileFromPool(prefabIndex);
+        
+         tile.transform.SetPositionAndRotation(
+            nextSpawnPosition,
+            nextSpawnRotation
+        );
+        
+        tile.SetActive(true);
 
-            if (currentIndex >= tilePrefabs.Length)
-                currentIndex = 0;
-        }
-
-        activeTiles.Add(tile);
+        activeTiles.Enqueue(tile);
 
         Transform exitPoint = tile.transform.Find("ExitPoint");
-        Debug.Log(exitPoint.position);
         nextSpawnPosition = exitPoint.position;
         nextSpawnRotation = exitPoint.rotation;
 
-        spawnedTiles++;
-
+     
     }
 
-    void DeleteTile()
+    void RecycleTile()
     {
-        Destroy(activeTiles[0]);
-        activeTiles.RemoveAt(0);
+        GameObject oldTile = activeTiles.Dequeue();
+        oldTile.SetActive(false);
+
+        
+        for (int i = 0; i < tilePrefabs.Length; i++)
+        {
+            if (oldTile.name.Contains(tilePrefabs[i].name))
+            {
+                tilePools[i].Push(oldTile);
+                break;
+            }
+        }
     }
 
+    GameObject GetTileFromPool(int index)
+    {
+        if (tilePools[index].Count > 0)
+        {
+            return tilePools[index].Pop();
+        }
 
-
+       
+        GameObject tile = Instantiate(tilePrefabs[index]);
+        tile.SetActive(false);
+        return tile;
+    }
 }
