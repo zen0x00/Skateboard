@@ -14,7 +14,7 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
-  m_Fog: 0
+  m_Fog: 1
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.01
@@ -25,7 +25,7 @@ RenderSettings:
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 0
-  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
+  m_SubtractiveShadowColor: {r: 1, g: 1, b: 1, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: b7b81ebbe36017a489fa9efb826111de, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
@@ -7048,9 +7048,10 @@ MonoBehaviour:
   - {fileID: 3928626048661147884, guid: f0fa36d6e28b87d4993bd411d44c4615, type: 3}
   - {fileID: 8514714196822990628, guid: 65d9c43a8e08f414188d9356175cbaed, type: 3}
   - {fileID: 6029882653037257745, guid: 49349d0220899d042b4471b6b57fa9e6, type: 3}
-  tilesOnScreen: 26
+  tilesOnScreen: 20
   player: {fileID: 611638686}
   slopeAngle: 1
+  coinSpawner: {fileID: 1090384250}
 --- !u!4 &567199513
 Transform:
   m_ObjectHideFlags: 0
@@ -8417,6 +8418,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1045513962}
   m_CullTransparentMesh: 1
+--- !u!1 &1090384249
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1090384251}
+  - component: {fileID: 1090384250}
+  m_Layer: 0
+  m_Name: Coin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1090384250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1090384249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a5268247c08c88419a4c5f06efbe228, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coinPrefab: {fileID: 3853924251296001479, guid: d86a2ad0e57d5924abc35b48cbb3f9f9, type: 3}
+  coinsPerTile: 3
+  heightOffset: 0.5
+--- !u!4 &1090384251
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1090384249}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 66.60842, y: -27.760391, z: 70.80932}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1187736022
 GameObject:
   m_ObjectHideFlags: 0
@@ -9954,7 +10002,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1778043280
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11868,3 +11916,4 @@ SceneRoots:
   - {fileID: 537454445}
   - {fileID: 567199513}
   - {fileID: 611638686}
+  - {fileID: 1090384251}
